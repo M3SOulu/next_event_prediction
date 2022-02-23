@@ -18,7 +18,7 @@ from collections import Counter
 from collections import defaultdict  
 
 #Setting pointing to where one wants to load and save data. 
-os.chdir("/home/ubuntu/next_event_prediction/data")
+os.chdir("/home/ubuntu/mika/next_event_prediction/data")
 
 #Global variables
 _ngrams_ = 5
@@ -148,7 +148,7 @@ def create_LSTM_model(ngrams, vocab_size, share_of_data=1):
     if (share_of_data < 1):
         select = int(len(ngrams) * share_of_data)
         ngrams = random.sample(ngrams, select)
-
+    random.shuffle(ngrams)
     # How many dimensions will be used to represent each event. 
     # With words one would use higher values here, e.g. 200-400
     # Higher values did not improve accuracy but did reduce perfomance. Even 50 might be too much
@@ -418,10 +418,12 @@ print("Mean of means", np.mean(lstm_preds_means))
 #ngram prediction-------------------------------------------
 #ngram test with loop
 ngram_preds = list()
+ngram_preds2 = list()
 start_s = time.time()
 for normal_s in normal_test:
     preds = give_preds(normal_s)
     ngram_preds.append(preds)
+    ngram_preds2.extend(preds)
     #print(".")
 end_s = time.time()
 print("prediction time ngram with ngrams:", _ngrams_, "done in", end_s - start_s)
@@ -432,7 +434,18 @@ for preds in ngram_preds:
     ngram_preds_means.append(ngram_mean)
     #print (np.mean(lstm_mean))
 print("Mean of means", np.mean(ngram_preds_means))
-ngram_preds_means
+np.mean(ngram_preds2)
+
+
+save_string = "Loop_LSTM_"+"22022022_"+data+"_"+str(3)
+#model.save(save_string)
+model = keras.models.load_model(save_string)
+# saving tokenizer
+#with open(save_string+"_tokenizer.pickle", 'wb') as handle:
+#    pickle.dump(lstm_tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#load tokenizer
+with open(save_string+"_tokenizer.pickle", 'rb') as handle:
+    lstm_tokenizer = pickle.load(handle)
 
 #Joint prediction again in CSC some crashes---------------------------------------------
 lstm_preds = list()
@@ -567,7 +580,7 @@ for i in range (9):
     end_s = time.time()
     print("Lstm model create ", _ngrams_, " done in ", end_s - start_s)
     #Saving to disk
-    save_string = "Loop_LSTM_"+"19012022_"+data+"_"+str(i)
+    save_string = "Loop_LSTM_"+"22022022_"+data+"_"+str(i)
     model.save(save_string)
     with open(save_string+"_tokenizer.pickle", 'wb') as handle:
         pickle.dump(lstm_tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -581,7 +594,7 @@ for i in range (9):
     start_s = time.time()
 
     #Load correct model
-    save_string = "Loop_LSTM_"+"19012022_"+data+"_"+str(i)
+    save_string = "Loop_LSTM_"+"22022022_"+data+"_"+str(i)
     #model.save(save_string)
     model = keras.models.load_model(save_string)
     # saving tokenizer
