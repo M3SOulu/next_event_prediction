@@ -1,3 +1,5 @@
+Note: 19 Jan 2024: The next event prediction using the NGram model from this work has now been integrated into the [LogLead](https://github.com/EvoTestOps/LogLead) tool.
+
 This work contains source code and data to replicate our 
 [Nexta 2022](https://icst2022.vrain.upv.es/home/nexta-2022)
 paper part of [ICST 2022 workshops](https://icst2022.vrain.upv.es/)
